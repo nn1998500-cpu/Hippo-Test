@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hippo/KGL Elite: Practice Exam 2026</title>
+    <style>
+        body { font-family: 'Georgia', serif; line-height: 1.6; color: #2c3e50; max-width: 950px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        .paper { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid #d1d1d1; }
+        .header { text-align: center; border-bottom: 5px double #1a5276; padding-bottom: 20px; margin-bottom: 30px; }
+        h2 { color: #1a5276; border-left: 10px solid #1a5276; padding-left: 15px; margin-top: 40px; text-transform: uppercase; font-size: 1.3em; }
+        .question { margin-bottom: 25px; padding: 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; transition: 0.2s; position: relative; }
+        .reading-passage { font-style: normal; background: #eef2f7; padding: 30px; border: 1px solid #b2ebf2; margin-bottom: 25px; border-radius: 8px; line-height: 1.9; font-size: 1.05em; }
+        .writing-area { width: 100%; height: 350px; padding: 20px; border: 2px solid #2c3e50; font-family: 'Arial', sans-serif; font-size: 16px; border-radius: 6px; box-sizing: border-box; resize: none; }
+        
+        /* Explanation Styling */
+        .explanation { display: none; margin-top: 20px; padding: 20px; background: #fdfefe; border-top: 3px solid #1a5276; border-radius: 0 0 8px 8px; }
+        .insight-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-family: sans-serif; font-size: 0.9em; }
+        .insight-table td { border: 1px solid #dee2e6; padding: 12px; }
+        .correct-row { background-color: #d4edda; border-left: 6px solid #28a745 !important; font-weight: bold; color: #155724; }
+        .wrong-row { color: #721c24; background-color: #f8d7da; font-style: italic; opacity: 0.8; }
+
+        /* Option Feedback Highlights */
+        .opt-wrap { padding: 8px; border-radius: 4px; display: block; margin: 5px 0; cursor: pointer; border: 1px solid transparent; }
+        .opt-wrap:hover { background: #f0f4f8; }
+        .highlight-correct { background-color: #d4edda !important; border: 1px solid #28a745; font-weight: bold; }
+        .highlight-wrong { background-color: #f8d7da !important; border: 1px solid #dc3545; }
+
+        /* Dashboard */
+        .dashboard { display: none; margin-top: 40px; border: 4px solid #1a5276; padding: 35px; background: #fff; text-align: center; border-radius: 12px; }
+        .percentage-grade { font-size: 82px; font-weight: bold; color: #1a5276; margin-bottom: 5px; }
+        .score-breakdown { font-size: 1.4em; color: #34495e; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .session-score { display: inline-block; margin: 10px 20px; font-size: 0.9em; color: #7f8c8d; }
+        .feedback-card { text-align: left; padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 10px solid; }
+        .p-card { background: #e8f5e9; border-color: #2e7d32; }
+        .c-card { background: #ffebee; border-color: #c62828; }
+
+        .btn { background: #1a5276; color: white; padding: 20px; border: none; cursor: pointer; font-size: 1.3em; font-weight: bold; width: 100%; margin-top: 20px; border-radius: 8px; transition: 0.3s; }
+        .btn:hover { background: #154360; }
+        #timer { font-size: 1.6em; font-weight: bold; text-align: center; background: #1a1a1a; color: #ffeb3b; padding: 15px; position: fixed; top: 20px; right: 20px; z-index: 1000; border-radius: 10px; width: 150px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+<div id="timer">90:00</div>
+
+<div class="paper">
+    <div class="header">
+        <h1>HIPPO & KGL PRACTICE EXAM</h1>
+        <p>Target: 5th Grade Elite Excellence</p>
+    </div>
+
+    <h2>Section 1: Critical Reading (The Amazon Rainforest)</h2>
+    <div class="reading-passage">
+        The Amazon Rainforest, often called the "lungs of the planet," is a vast tropical biome spanning nine nations in South America. It is unparalleled in its biodiversity, housing one in ten known species on Earth. However, the ecosystem faces an existential threat from deforestation. When large tracts of trees are cleared for cattle ranching or soy farming, the carbon cycle is disrupted. Trees absorb carbon dioxide; without them, greenhouse gases accumulate, accelerating global warming. Furthermore, the local indigenous communities, who have acted as stewards of the land for millennia, find their way of life jeopardized. International initiatives aim to promote sustainable harvesting of rubber and nuts as an alternative to destructive industries, but the pace of restoration remains sluggish compared to the rate of loss.
+    </div>
+    <div id="readContainer"></div>
+
+    <h2>Section 2: Use of English (Grammar Mastery)</h2>
+    <div id="gramContainer"></div>
+
+    <h2>Section 3: Advanced Vocabulary (Precise Expression)</h2>
+    <div id="vocContainer"></div>
+
+    <h2>Section 4: Writing Proficiency</h2>
+    <p><strong>Essay Prompt:</strong> "Is it better to live in a bustling big city or a quiet rural village? Support your opinion with specific reasons." (Target: 120-150 words)</p>
+    <textarea id="essayInput" class="writing-area" placeholder="Write your essay here..."></textarea>
+    
+    <button class="btn" onclick="processFinalGrade()">SUBMIT EXAM FOR EVALUATION</button>
+
+    <div id="dashboard" class="dashboard">
+        <h2 style="border:none; margin:0;">FINAL EXAM RESULTS</h2>
+        <div class="percentage-grade" id="finalPercent">0%</div>
+        <div class="score-breakdown" id="finalPoints">Points: 0 / 100</div>
+        
+        <div id="sessionBreakdown">
+            <div class="session-score">Reading: <span id="s1Score">0</span>/20</div>
+            <div class="session-score">Grammar: <span id="s2Score">0</span>/20</div>
+            <div class="session-score">Vocab: <span id="s3Score">0</span>/20</div>
+            <div class="session-score">Writing: <span id="s4Score">0</span>/40</div>
+        </div>
+
+        <h3 style="text-align: left; margin-top:30px;">Detailed Writing Feedback:</h3>
+        <div id="writeFeedback"></div>
+        <button class="btn" style="background: #2c3e50;" onclick="showDeepInsights()">REVEAL ANSWERS & TEACHER NOTES</button>
+    </div>
+</div>
+
+<script>
+    // --- DATA --- (Your existing 60 questions with insights)
+    const s1Data = [
+        {q: "Why is the Amazon called the 'lungs of the planet'?", options: ["a) It creates rain", "b) It absorbs carbon dioxide", "c) It spans nine nations"], correct: 1, ins: ["Rain: Not why it is called 'lungs'.", "Carbon: Correct; lungs exchange gases like trees exchange CO2.", "Nations: Describes geography, not biological function."]},
+        {q: "Which industry is mentioned as a cause of deforestation?", options: ["a) Rubber harvesting", "b) Nut gathering", "c) Cattle ranching"], correct: 2, ins: ["Rubber: Sustainable alternative.", "Nuts: Sustainable alternative.", "Cattle: Correct; cited as a reason for clearing trees."]},
+        {q: "What is the meaning of 'unparalleled'?", options: ["a) Equal to others", "b) Better than any other", "c) Very similar"], correct: 1, ins: ["Equal: Antonym.", "Unique: Correct; nothing compares to it.", "Similar: Incorrect."]},
+        {q: "'Existential' threat implies the threat is to the reef's:", options: ["a) Color", "b) Very existence/survival", "c) Location"], correct: 1, ins: ["Color: Unrelated.", "Survival: Correct; a threat to its life.", "Location: Incorrect."]},
+        {q: "How many species on Earth are found in the Amazon?", options: ["a) 10%", "b) 50%", "c) 1%"], correct: 0, ins: ["10%: Correct; 'one in ten' is 10%.", "50%: Not in text.", "1%: Too low."]},
+        {q: "What happens when trees are removed?", options: ["a) Carbon cycle improves", "b) Greenhouse gases increase", "c) More rain falls"], correct: 1, ins: ["Improves: Removing trees disrupts it.", "Gases: Correct; more CO2 stays in the air.", "Rain: Rainfall usually drops."]},
+        {q: "Who are the 'stewards' of the land?", options: ["a) International scientists", "b) Indigenous communities", "c) Soy farmers"], correct: 1, ins: ["Scientists: Not primary stewards.", "Indigenous: Correct; they cared for it for millennia.", "Farmers: Described as a threat."]},
+        {q: "'Jeopardized' most closely means:", options: ["a) Protected", "b) Put in danger", "c) Improved"], correct: 1, ins: ["Protected: Antonym.", "Danger: Correct.", "Improved: Antonym."]},
+        {q: "What is an alternative to destructive industries?", options: ["a) Cattle ranching", "b) Sustainable harvesting", "c) Building more roads"], correct: 1, ins: ["Cattle: Destructive.", "Harvesting: Correct (Rubber/Nuts).", "Roads: Destructive."]},
+        {q: "The pace of restoration is described as:", options: ["a) Rapid", "b) Sluggish", "c) Non-existent"], correct: 1, ins: ["Rapid: Incorrect.", "Sluggish: Correct; means slow.", "Non-existent: Too extreme."]},
+        {q: "The Amazon is a 'biome'. This means a:", options: ["a) Type of tree", "b) Large naturally occurring community", "c) Small garden"], correct: 1, ins: ["Tree: Part of a biome, not a biome.", "Community: Correct; refers to the ecosystem.", "Garden: Too small."]},
+        {q: "Carbon dioxide is absorbed by:", options: ["a) Cattle", "b) Trees", "c) Algae"], correct: 1, ins: ["Cattle: Produce gases.", "Trees: Correct; their main function.", "Algae: Not focus of text."]},
+        {q: "'Millennia' refers to:", options: ["a) Hundreds of years", "b) Thousands of years", "c) Decades"], correct: 1, ins: ["Hundreds: Centuries.", "Thousands: Correct plural.", "Decades: 10-year periods."]},
+        {q: "Global warming is accelerated by:", options: ["a) Planting trees", "b) Accumulating greenhouse gases", "c) Sustainable farming"], correct: 1, ins: ["Planting: Slows it.", "Gases: Correct connection.", "Sustainable: Helps planet."]},
+        {q: "Where is the Amazon located?", options: ["a) Africa", "b) South America", "c) Australia"], correct: 1, ins: ["Africa: Incorrect.", "South America: Correct.", "Australia: Incorrect."]},
+        {q: "The word 'vast' suggests the forest is:", options: ["a) Tiny", "b) Enormous", "c) Colorful"], correct: 1, ins: ["Tiny: Antonym.", "Enormous: Correct synonym.", "Colorful: Unrelated."]},
+        {q: "Soy farming is mentioned as:", options: ["a) A conservation method", "b) A cause of clearing tracts", "c) A way to save indigenous people"], correct: 1, ins: ["Conservation: Antonym.", "Clearing: Correct; trees are removed for it.", "Indigenous: Threatens them."]},
+        {q: "'Restoration' means:", options: ["a) Breaking down", "b) Bringing back to original state", "c) Moving to a new place"], correct: 1, ins: ["Breaking: Destructive.", "Bringing back: Correct.", "Moving: Relocation."]},
+        {q: "How many nations does the forest span?", options: ["a) Five", "b) Nine", "c) Two"], correct: 1, ins: ["Five: Incorrect.", "Nine: Correct.", "Two: Incorrect."]},
+        {q: "The tone of the passage is:", options: ["a) Humorous", "b) Informative and concerned", "c) Angry and violent"], correct: 1, ins: ["Humorous: No comedy.", "Informative: Correct; factual and serious.", "Angry: Language is professional."]}
+    ];
+
+    const s2Data = [
+        {q: "If they ______ earlier, they wouldn't have missed the flight.", options: ["a) leave", "b) had left", "c) would leave"], correct: 1, ins: ["Leave: Present.", "Had left: Correct Third Conditional.", "Would leave: Incorrect structure."]},
+        {q: "This is the car ______ I bought yesterday.", options: ["a) who", "b) whom", "c) which"], correct: 2, ins: ["Who: People.", "Whom: People.", "Which: Correct for objects."]},
+        {q: "I ______ coffee when the phone rang.", options: ["a) was drinking", "b) drank", "c) have drunk"], correct: 0, ins: ["Was drinking: Correct interrupted action.", "Drank: Simple past.", "Have drunk: Present perfect."]},
+        {q: "She is ______ than her brother.", options: ["a) more tall", "b) taller", "c) tallest"], correct: 1, ins: ["More tall: Incorrect.", "Taller: Correct comparative.", "Tallest: Superlative."]},
+        {q: "We ______ to the zoo tomorrow if it's sunny.", options: ["a) go", "b) will go", "c) went"], correct: 1, ins: ["Go: Routine.", "Will go: Correct future conditional.", "Went: Past."]},
+        {q: "He ______ in London for ten years now.", options: ["a) lives", "b) has lived", "c) lived"], correct: 1, ins: ["Lives: Fact only.", "Has lived: Correct; past to present.", "Lived: Past only."]},
+        {q: "You ______ touch that; it's very hot!", options: ["a) shouldn't", "b) needn't", "c) mustn't"], correct: 2, ins: ["Shouldn't: Advice.", "Needn't: No need.", "Mustn't: Correct strong prohibition."]},
+        {q: "The keys ______ on the table a minute ago.", options: ["a) was", "b) were", "c) is"], correct: 1, ins: ["Was: Singular.", "Were: Correct plural.", "Is: Present."]},
+        {q: "I'm looking forward to ______ you.", options: ["a) see", "b) seeing", "c) saw"], correct: 1, ins: ["See: Incorrect.", "Seeing: Correct; gerund after preposition.", "Saw: Past."]},
+        {q: "She ______ her homework before dinner.", options: ["a) had finished", "b) finish", "c) finishing"], correct: 0, ins: ["Had finished: Correct past perfect.", "Finish: Base.", "Finishing: Incorrect."]},
+        {q: "They ______ play football every Saturday.", options: ["a) used to", "b) use to", "c) using to"], correct: 0, ins: ["Used to: Correct past habit.", "Use to: Only for neg/quest.", "Using: Incorrect."]},
+        {q: "Neither the teacher ______ the students were there.", options: ["a) or", "b) nor", "c) and"], correct: 1, ins: ["Or: With either.", "Nor: Correct with neither.", "And: With both."]},
+        {q: "This cake was ______ by my mother.", options: ["a) make", "b) making", "c) made"], correct: 2, ins: ["Make: Base.", "Making: Continuous.", "Made: Correct passive participle."]},
+        {q: "______ you like some tea?", options: ["a) Do", "b) Would", "c) Will"], correct: 1, ins: ["Do: Fact.", "Would: Correct polite offer.", "Will: Intent."]},
+        {q: "I have ______ friends in this city.", options: ["a) a little", "b) a few", "c) much"], correct: 1, ins: ["A little: Uncountable.", "A few: Correct countable.", "Much: Uncountable."]},
+        {q: "I don't know ______ the answer is.", options: ["a) what", "b) which", "c) that"], correct: 0, ins: ["What: Correct interrogative.", "Which: Choice.", "That: Not for questions."]},
+        {q: "He is the ______ player on the team.", options: ["a) better", "b) goodest", "c) best"], correct: 2, ins: ["Better: Comparative.", "Goodest: Not a word.", "Best: Correct superlative."]},
+        {q: "We should avoid ______ in the rain.", options: ["a) to walk", "b) walking", "c) walk"], correct: 1, ins: ["To walk: Incorrect.", "Walking: Correct gerund.", "Walk: Base."]},
+        {q: "She speaks English ______.", options: ["a) good", "b) well", "c) bestly"], correct: 1, ins: ["Good: Adjective.", "Well: Correct adverb.", "Bestly: Not a word."]},
+        {q: "The book ______ by the author last month.", options: ["a) wrote", "b) was written", "c) writes"], correct: 1, ins: ["Wrote: Active.", "Was written: Correct passive.", "Writes: Present."]}
+    ];
+
+    const s3Data = [
+        {q: "A person who is 'resilient' can:", options: ["a) Give up easily", "b) Recover quickly", "c) Run very fast"], correct: 1, ins: ["Give up: Antonym.", "Recover: Correct; bounce back.", "Fast: Unrelated."]},
+        {q: "If a task is 'arduous', it is:", options: ["a) Very easy", "b) Difficult and tiring", "c) Fun"], correct: 1, ins: ["Easy: Antonym.", "Difficult: Correct.", "Fun: Unrelated."]},
+        {q: "What is an 'innovation'?", options: ["a) An old tradition", "b) A new idea or method", "c) A type of fruit"], correct: 1, ins: ["Tradition: Antonym.", "New idea: Correct.", "Fruit: No."]},
+        {q: "To 'curtail' something means to:", options: ["a) Increase it", "b) Reduce or limit it", "c) Start it"], correct: 1, ins: ["Increase: Antonym.", "Reduce: Correct.", "Start: Antonym."]},
+        {q: "A 'versatile' tool can:", options: ["a) Only do one thing", "b) Be used for many purposes", "c) Break easily"], correct: 1, ins: ["One thing: Antonym.", "Many purposes: Correct.", "Break: Relates to quality."]},
+        {q: "What does 'obscure' mean?", options: ["a) Clear and famous", "b) Hidden or little known", "c) Very bright"], correct: 1, ins: ["Clear: Antonym.", "Hidden: Correct.", "Bright: Antonym."]},
+        {q: "'Plausible' means:", options: ["a) Impossible", "b) Believable/Likely", "c) Very loud"], correct: 1, ins: ["Impossible: Antonym.", "Believable: Correct.", "Loud: Unrelated."]},
+        {q: "To 'collaborate' is to:", options: ["a) Work alone", "b) Work together", "c) Fight"], correct: 1, ins: ["Alone: Antonym.", "Together: Correct.", "Fight: Conflict."]},
+        {q: "'Abundant' is the opposite of:", options: ["a) Plentiful", "b) Scarce", "c) Heavy"], correct: 1, ins: ["Plentiful: Synonym.", "Scarce: Correct antonym.", "Heavy: Weight."]},
+        {q: "An 'adversary' is a:", options: ["a) Friend", "b) Opponent", "c) Teacher"], correct: 1, ins: ["Friend: Antonym.", "Opponent: Correct.", "Teacher: Guide."]},
+        {q: "To 'verify' means to:", options: ["a) Tell a lie", "b) Check if true", "c) Forget"], correct: 1, ins: ["Lie: Antonym.", "Check: Correct.", "Forget: Unrelated."]},
+        {q: "'Frivolous' behavior is:", options: ["a) Very serious", "b) Not serious or silly", "c) Angry"], correct: 1, ins: ["Serious: Antonym.", "Silly: Correct.", "Angry: Emotion."]},
+        {q: "'Humble' means:", options: ["a) Proud and boastful", "b) Modest", "c) Very rich"], correct: 1, ins: ["Proud: Antonym.", "Modest: Correct.", "Rich: Wealth."]},
+        {q: "To 'emulate' someone is to:", options: ["a) Dislike them", "b) Try to equal or copy them", "c) Ignore them"], correct: 1, ins: ["Dislike: Emotion.", "Copy: Correct.", "Ignore: Antonym."]},
+        {q: "A 'dormant' volcano is:", options: ["a) Exploding", "b) Inactive/Sleeping", "c) Very small"], correct: 1, ins: ["Exploding: Active.", "Inactive: Correct.", "Small: Size."]},
+        {q: "What is a 'consensus'?", options: ["a) A big argument", "b) General agreement", "c) A secret"], correct: 1, ins: ["Argument: Disagreement.", "Agreement: Correct.", "Secret: Hidden info."]},
+        {q: "'Vivid' memories are:", options: ["a) Blurry", "b) Clear and detailed", "c) Sad"], correct: 1, ins: ["Blurry: Antonym.", "Clear: Correct.", "Sad: Emotion."]},
+        {q: "To 'relinquish' power means to:", options: ["a) Take it by force", "b) Give it up", "c) Hide it"], correct: 1, ins: ["Take: Seize.", "Give up: Correct.", "Hide: Conceal."]},
+        {q: "An 'excursion' is a:", options: ["a) Short trip", "b) Type of exam", "c) Long sleep"], correct: 0, ins: ["Short trip: Correct.", "Exam: Test.", "Sleep: Slumber."]},
+        {q: "To 'deter' someone is to:", options: ["a) Encourage them", "b) Discourage them", "c) Follow them"], correct: 1, ins: ["Encourage: Antonym.", "Discourage: Correct.", "Follow: Pursue."]}
+    ];
+
+    function render(data, containerId, prefix) {
+        const c = document.getElementById(containerId);
+        data.forEach((item, i) => {
+            let html = `<div class="question" id="q-${prefix}${i}"><p><strong>${i+1}.</strong> ${item.q}</p>`;
+            item.options.forEach((opt, j) => {
+                html += `<label class="opt-wrap" id="label-${prefix}${i}-${j}"><input type="radio" name="${prefix}${i}" value="${j}"> ${opt}</label>`;
+            });
+            html += `<div class="explanation" id="ex${prefix}${i}">
+                <table class="insight-table">
+                    <tr><td class="${item.correct===0?'correct-row':'wrong-row'}">${item.ins[0]}</td></tr>
+                    <tr><td class="${item.correct===1?'correct-row':'wrong-row'}">${item.ins[1]}</td></tr>
+                    <tr><td class="${item.correct===2?'correct-row':'wrong-row'}">${item.ins[2]}</td></tr>
+                </table>
+            </div></div>`;
+            c.innerHTML += html;
+        });
+    }
+
+    render(s1Data, 'readContainer', 'r');
+    render(s2Data, 'gramContainer', 'g');
+    render(s3Data, 'vocContainer', 'v');
+
+    function processFinalGrade() {
+        let rScore = 0, gScore = 0, vScore = 0;
+        
+        // Tally Multiple Choice
+        s1Data.forEach((item, i) => { const s = document.querySelector(`input[name="r${i}"]:checked`); if(s && parseInt(s.value)===item.correct) rScore++; });
+        s2Data.forEach((item, i) => { const s = document.querySelector(`input[name="g${i}"]:checked`); if(s && parseInt(s.value)===item.correct) gScore++; });
+        s3Data.forEach((item, i) => { const s = document.querySelector(`input[name="v${i}"]:checked`); if(s && parseInt(s.value)===item.correct) vScore++; });
+
+        // Tally Writing (Out of 40)
+        const text = document.getElementById('essayInput').value.trim();
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        let wScore = 0; let pros = []; let cons = [];
+
+        if (words.length >= 120 && words.length <= 160) { wScore += 15; pros.push("Target word count achieved (15 pts)."); }
+        else { wScore += 5; cons.push("Word count is outside the target range (5 pts)."); }
+
+        if (text.includes('\n')) { wScore += 15; pros.push("Structure: Paragraphs are clear (15 pts)."); }
+        else { cons.push("Structure: Missing paragraph breaks."); }
+
+        const connectors = ["however", "moreover", "consequently", "furthermore", "opinion"];
+        let found = connectors.filter(w => text.toLowerCase().includes(w));
+        if (found.length >= 2) { wScore += 10; pros.push("Vocabulary: Used advanced transitions (10 pts)."); }
+        else { cons.push("Vocabulary: Needs more elite transition words."); }
+
+        // Final Display
+        let total = rScore + gScore + vScore + wScore;
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('finalPercent').innerText = total + "/100";
+        document.getElementById('finalPoints').innerText = `Total Exam Points: ${total}`;
+        
+        document.getElementById('s1Score').innerText = rScore;
+        document.getElementById('s2Score').innerText = gScore;
+        document.getElementById('s3Score').innerText = vScore;
+        document.getElementById('s4Score').innerText = wScore;
+
+        document.getElementById('writeFeedback').innerHTML = `
+            <div class="feedback-card p-card"><strong>✅ Points Earned:</strong><ul><li>${pros.join('</li><li>')}</li></ul></div>
+            <div class="feedback-card c-card"><strong>⚠️ Areas for Improvement:</strong><ul><li>${cons.join('</li><li>')}</li></ul></div>
+        `;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function showDeepInsights() {
+        document.querySelectorAll('.explanation').forEach(el => el.style.display = 'block');
+        const sections = [{d: s1Data, p: 'r'}, {d: s2Data, p: 'g'}, {d: s3Data, p: 'v'}];
+        sections.forEach(sec => {
+            sec.d.forEach((item, i) => {
+                const radios = document.getElementsByName(`${sec.p}${i}`);
+                let sel = -1;
+                radios.forEach(r => { if(r.checked) sel = parseInt(r.value); });
+                document.getElementById(`label-${sec.p}${i}-${item.correct}`).classList.add('highlight-correct');
+                if(sel !== -1 && sel !== item.correct) document.getElementById(`label-${sec.p}${i}-${sel}`).classList.add('highlight-wrong');
+            });
+        });
+        alert("Deep Insights revealed! Scroll through the test to see your detailed breakdown.");
+    }
+
+    let time = 5400;
+    setInterval(() => {
+        let m = Math.floor(time / 60); let s = time % 60;
+        document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if (time > 0) time--;
+    }, 1000);
+</script>
+</body>
+</html>
