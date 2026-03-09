@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIPPO Mock Exam - 60 Questions</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+        .header { position: sticky; top: 0; background: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 10px; z-index: 1000; }
+        #timer { font-size: 32px; color: #f1c40f; font-weight: bold; }
+        .section-header { background: #3498db; color: white; padding: 15px; margin: 30px 0 15px 0; border-radius: 5px; }
+        .passage { background: #f9f9f9; padding: 20px; border-left: 6px solid #3498db; margin-bottom: 25px; font-style: italic; line-height: 1.8; }
+        .question-box { padding: 15px; border-bottom: 1px solid #eee; transition: 0.3s; }
+        .options label { display: block; margin: 10px 0; cursor: pointer; padding: 8px; border-radius: 5px; }
+        .options label:hover { background: #f0f0f0; }
+        .explanation { display: none; margin-top: 15px; padding: 15px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+        .correct-ans { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .incorrect-ans { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .writing-area { width: 100%; height: 250px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-top: 10px; }
+        .submit-btn { width: 100%; padding: 20px; background: #27ae60; color: white; font-size: 22px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; margin-top: 40px; }
+        .submit-btn:hover { background: #219150; }
+        #score-board { display: none; text-align: center; margin-bottom: 30px; padding: 20px; border: 3px solid #27ae60; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>HIPPO ENGLISH CONTEST: MOCK EXAM</h1>
+        <div>Time Remaining: <span id="timer">60:00</span></div>
+    </div>
+
+    <div id="score-board">
+        <h2 id="final-score"></h2>
+        <p>Review the detailed explanations below for every question.</p>
+    </div>
+
+    <form id="examForm">
+        <h2 class="section-header">Session 1: Reading Comprehension</h2>
+        
+        <div class="passage">
+            <strong>Text A: The Renaissance.</strong> The Renaissance was a fervent period of European cultural, artistic, political, and economic “rebirth” following the Middle Ages. Generally described as taking place from the 14th century to the 17th century, the Renaissance promoted the rediscovery of classical philosophy, literature, and art. Some of the greatest thinkers, authors, statesmen, scientists, and artists in human history thrived during this era.
+        </div>
+        <div id="reading-q1"></div>
+
+        <div class="passage">
+            <strong>Text B: Renewable Energy.</strong> Unlike fossil fuels, which are finite and contribute to pollution, renewable energy sources like wind, solar, and hydroelectric power are naturally replenished. Transitioning to these sources is critical to mitigating the effects of climate change. However, the initial cost of infrastructure can be high, posing a challenge for developing nations.
+        </div>
+        <div id="reading-q2"></div>
+
+        <h2 class="section-header">Session 2: Grammar & Usage</h2>
+        <div id="grammar-questions"></div>
+
+        <h2 class="section-header">Session 3: Vocabulary & Definitions</h2>
+        <div id="vocab-questions"></div>
+
+        <h2 class="section-header">Session 4: Writing Task</h2>
+        <p><strong>Topic:</strong> "Should social media platforms be responsible for the accuracy of information shared on their sites?" (Write 120-150 words. Use: <em>Furthermore, Conversely, and Consequently</em>).</p>
+        <textarea class="writing-area" id="essay" placeholder="Start writing your essay here..."></textarea>
+
+        <button type="button" class="submit-btn" onclick="evaluateExam()">FINISH & SUBMIT EXAM</button>
+    </form>
+</div>
+
+<script>
+// QUESTION DATA
+const readingData = [
+    { n:1, q:"What does 'rebirth' imply in the text?", a:"b", opts:["A literal second birth","A revival of interest","The end of art"], exp:"Rebirth (Renaissance) refers to the revival of classical learning and culture."},
+    { n:2, q:"When did the Renaissance occur?", a:"c", opts:["10th-12th Century","18th-20th Century","14th-17th Century"], exp:"The text explicitly states the 14th to 17th century."},
+    { n:3, q:"What was 'rediscovered' during this era?", a:"a", opts:["Classical philosophy","New continents","Fossil fuels"], exp:"The text mentions the rediscovery of classical philosophy, literature, and art."},
+    { n:4, q:"In Text B, what is the main drawback of renewable energy?", a:"b", opts:["It pollutes more","High initial infrastructure cost","It is finite"], exp:"The text states the 'initial cost of infrastructure can be high'."},
+    { n:5, q:"Which word is a synonym for 'mitigating'?", a:"c", opts:["Increasing","Ignoring","Reducing/Lessening"], exp:"To mitigate the effects of climate change means to make them less severe."},
+    { n:6, q:"Fossil fuels are described as 'finite'. This means:", a:"a", opts:["They will run out","They are free","They are endless"], exp:"Finite means having limits or bounds; not infinite."},
+    { n:7, q:"Which is NOT a renewable source mentioned?", a:"c", opts:["Wind","Hydroelectric","Coal"], exp:"Coal is a fossil fuel, not a renewable source."},
+    { n:8, q:"What is the tone of Text A?", a:"b", opts:["Negative","Informative/Admiring","Skeptical"], exp:"The text highlights 'greatest thinkers' and 'thrived', indicating a positive, informative tone."},
+    { n:9, q:"According to Text B, why is transitioning energy sources critical?", a:"a", opts:["To stop climate change","To save money immediately","To build more buildings"], exp:"Transitioning is described as critical to mitigating climate change."},
+    { n:10, q:"Who thrived during the Renaissance?", a:"c", opts:["Only kings","Only soldiers","Artists and scientists"], exp:"The text mentions thinkers, authors, scientists, and artists."},
+    { n:11, q:"Text A suggests the Middle Ages were:", a:"a", opts:["Followed by a rebirth","The peak of art","Very short"], exp:"It says the Renaissance was a rebirth 'following' the Middle Ages."},
+    { n:12, q:"Developing nations face a challenge because:", a:"b", opts:["They have no wind","Of high infrastructure costs","They don't want energy"], exp:"The high cost of infrastructure poses a challenge for them."},
+    { n:13, q:"Wind and Solar are 'replenished'. This means:", a:"c", opts:["They are dangerous","They are dirty","They are refilled/restored"], exp:"Naturally replenished means they are replaced by natural processes."},
+    { n:14, q:"The Renaissance promoted 'classical' literature. 'Classical' likely refers to:", a:"a", opts:["Ancient Greek/Roman","Modern English","Science Fiction"], exp:"Classical usually refers to the foundational Greek and Roman periods."},
+    { n:15, q:"The main idea of Text B is:", a:"b", opts:["Money is bad","The benefits and challenges of renewable energy","Fossil fuels are the future"], exp:"It discusses the need for renewable energy and the cost challenges associated with it."},
+    { n:16, q:"Which word means 'to grow well or vigorously'?", a:"c", opts:["Finite","Mitigate","Thrived"], exp:"Thrived means to have flourished or grown well."},
+    { n:17, q:"True or False: Fossil fuels are naturally replenished.", a:"b", opts:["True","False","Not Mentioned"], exp:"The text says renewable energy is replenished, 'unlike fossil fuels'."},
+    { n:18, q:"True or False: The Renaissance started in the 17th century.", a:"b", opts:["True","False","Not Mentioned"], exp:"It began in the 14th century and lasted until the 17th."},
+    { n:19, q:"The word 'infrastructure' refers to:", a:"a", opts:["Basic physical systems/structures","Natural weather","Small tools"], exp:"Infrastructure refers to the basic systems like grids and power plants."},
+    { n:20, q:"Which source is mentioned as contributing to pollution?", a:"b", opts:["Solar","Fossil Fuels","Wind"], exp:"The text links fossil fuels directly to pollution."}
+];
+
+const grammarData = [
+    { n:21, q:"If she ______ earlier, she wouldn't have missed the train.", a:"c", opts:["arrives","arrived","had arrived"], exp:"Third Conditional: If + past perfect, would have + past participle."},
+    { n:22, q:"By the time you arrive, I ______ my work.", a:"b", opts:["finish","will have finished","finished"], exp:"Future Perfect is used for actions completed before a future point."},
+    { n:23, q:"I look forward ______ you next week.", a:"c", opts:["to see","see","to seeing"], exp:"The phrase 'look forward to' is followed by a gerund (-ing)."},
+    { n:24, q:"The teacher made the students ______ the test again.", a:"b", opts:["to take","take","taking"], exp:"The verb 'make' is followed by the bare infinitive (without 'to')."},
+    { n:25, q:"Hardly ______ started the game when it began to rain.", a:"a", opts:["had we","we had","did we"], exp:"Negative inversion: Hardly + auxiliary + subject."},
+    { n:26, q:"I wish I ______ more time to travel.", a:"b", opts:["have","had","would have"], exp:"Wish + past simple expresses a present regret."},
+    { n:27, q:"She is ______ person I have ever met.", a:"b", opts:["the most kind","the kindest","the more kind"], exp:"Superlative of one-syllable adjectives uses -est."},
+    { n:28, q:"Neither the manager nor the employees ______ present.", a:"b", opts:["was","were","be"], exp:"The verb agrees with the closer subject ('employees' is plural)."},
+    { n:29, q:"This is the hospital ______ I was born.", a:"b", opts:["which","where","that"], exp:"'Where' is the relative pronoun for locations."},
+    { n:30, q:"He ______ for two hours when his phone died.", a:"c", opts:["has been talking","is talking","had been talking"], exp:"Past Perfect Continuous shows duration up to a point in the past."},
+    { n:31, q:"You ______ better see a doctor about that cough.", a:"a", opts:["had","would","should"], exp:"'Had better' is a fixed idiom for advice."},
+    { n:32, q:"The house ______ every five years.", a:"c", opts:["paints","is painting","is painted"], exp:"Passive voice for regular actions (Present Simple Passive)."},
+    { n:33, q:"Stop ______ so much noise!", a:"b", opts:["to make","making","make"], exp:"The verb 'stop' is followed by a gerund to mean 'cease an action'."},
+    { n:34, q:"I ______ to the cinema for ages.", a:"c", opts:["didn't go","don't go","haven't gone"], exp:"Present Perfect with 'for' for a period up to now."},
+    { n:35, q:"Whose bag is this? It's ______.", a:"c", opts:["my","mine's","mine"], exp:"'Mine' is a possessive pronoun; 'my' is a possessive adjective."},
+    { n:36, q:"Despite ______ ill, he went to work.", a:"b", opts:["be","being","he was"], exp:"'Despite' is followed by a gerund or noun phrase."},
+    { n:37, q:"Can you tell me where ______?", a:"b", opts:["is the station","the station is","the station"], exp:"Indirect questions use statement word order (Subject + Verb)."},
+    { n:38, q:"I ______ used to waking up early.", a:"a", opts:["am getting","get","am"], exp:"'Get used to' describes the process of becoming accustomed."},
+    { n:39, q:"If only I ______ that to her yesterday.", a:"c", opts:["didn't say","haven't said","hadn't said"], exp:"If only + past perfect for past regrets."},
+    { n:40, q:"I have very ______ friends, but they are all great.", a:"b", opts:["little","few","small"], exp:"'Few' is used with countable plural nouns."}
+];
+
+const vocabData = [
+    { n:41, q:"What is the synonym of 'Exquisite'?", a:"b", opts:["Ugly","Beautifully crafted","Common"], exp:"Exquisite means extremely beautiful and delicate."},
+    { n:42, q:"What does 'Ambiguous' mean?", a:"c", opts:["Very clear","Ambitious","Having more than one meaning"], exp:"Ambiguous means open to more than one interpretation; unclear."},
+    { n:43, q:"To 'elucidate' a concept is to:", a:"a", opts:["Explain clearly","Make it harder","Forget it"], exp:"To elucidate means to make something clear; explain."},
+    { n:44, q:"What is the opposite of 'Obsolete'?", a:"b", opts:["Ancient","Modern/Current","Broken"], exp:"Obsolete means no longer produced or used; the opposite is modern."},
+    { n:45, q:"A 'philanthropist' is someone who:", a:"c", opts:["Steals money","Hates people","Donates to good causes"], exp:"Philanthropists seek to promote the welfare of others, often by donating money."},
+    { n:46, q:"'Benevolent' means:", a:"a", opts:["Kind and well-meaning","Cruel","Fast"], exp:"Benevolent comes from Latin roots meaning 'well-wishing' or kind."},
+    { n:47, q:"A 'precursor' is something that:", a:"b", opts:["Follows after","Comes before","Is permanent"], exp:"A precursor is a person or thing that comes before another of the same kind."},
+    { n:48, q:"'Vulnerable' means:", a:"c", opts:["Strong","Safe","Open to attack/injury"], exp:"Vulnerable means susceptible to physical or emotional attack or harm."},
+    { n:49, q:"To 'validate' something is to:", a:"a", opts:["Confirm it is true","Break it","Hide it"], exp:"To validate is to check or prove the validity or accuracy of something."},
+    { n:50, q:"A 'consensus' is:", a:"b", opts:["An argument","General agreement","A type of law"], exp:"Consensus refers to a general agreement among a group of people."},
+    { n:51, q:"'Superfluous' means:", a:"c", opts:["Important","Small","Unnecessary/Extra"], exp:"Superfluous means unnecessary, especially through being more than enough."},
+    { n:52, q:"To 'scrutinize' is to:", a:"b", opts:["Ignore","Examine closely","Clean"], exp:"Scrutinize means to examine or inspect closely and thoroughly."},
+    { n:53, q:"What is an 'incentive'?", a:"a", opts:["A motivation/reward","A punishment","A tool"], exp:"An incentive is a thing that motivates or encourages someone to do something."},
+    { n:54, q:"'Inevitable' means:", a:"c", opts:["Unlikely","Possible","Unavoidable"], exp:"Inevitable means certain to happen; unavoidable."},
+    { n:55, q:"A 'novice' is a:", a:"b", opts:["Professional","Beginner","Teacher"], exp:"A novice is a person new to or inexperienced in a field or situation."},
+    { n:56, q:"'Resilient' means:", a:"a", opts:["Able to recover quickly","Very weak","Shiny"], exp:"Resilient means able to withstand or recover quickly from difficult conditions."},
+    { n:57, q:"To 'curtail' something is to:", a:"b", opts:["Extend it","Reduce/Cut it short","Decorate it"], exp:"To curtail means to reduce in extent or quantity; impose a restriction on."},
+    { n:58, q:"'Perplexed' means:", a:"c", opts:["Happy","Calm","Confused"], exp:"Perplexed means completely baffled; very puzzled."},
+    { n:59, q:"A 'proponent' is a:", a:"a", opts:["Supporter","Enemy","Scientist"], exp:"A proponent is a person who advocates a theory, proposal, or project."},
+    { n:60, q:"'Lucid' means:", a:"b", opts:["Dark","Clear/Easy to understand","Fluid"], exp:"Lucid means expressed clearly; easy to understand."}
+];
+
+// RENDER QUESTIONS
+function render(data, targetId) {
+    const container = document.getElementById(targetId);
+    data.forEach(item => {
+        container.innerHTML += `
+            <div class="question-box" id="box-${item.n}">
+                <p><strong>${item.n}. ${item.q}</strong></p>
+                <div class="options">
+                    <label><input type="radio" name="q${item.n}" value="a"> a) ${item.opts[0]}</label>
+                    <label><input type="radio" name="q${item.n}" value="b"> b) ${item.opts[1]}</label>
+                    <label><input type="radio" name="q${item.n}" value="c"> c) ${item.opts[2]}</label>
+                </div>
+                <div class="explanation" id="exp-${item.n}">
+                    <strong>Correct: ${item.a.toUpperCase()}</strong> | ${item.exp}
+                </div>
+            </div>`;
+    });
+}
+
+render(readingData, "reading-q1");
+render(grammarData, "grammar-questions");
+render(vocabData, "vocab-questions");
+
+// TIMER LOGIC
+let time = 3600;
+const timerEl = document.getElementById('timer');
+const countdown = setInterval(() => {
+    let m = Math.floor(time / 60);
+    let s = time % 60;
+    timerEl.innerHTML = `${m}:${s < 10 ? '0' : ''}${s}`;
+    if (time <= 0) { clearInterval(countdown); evaluateExam(); }
+    time--;
+}, 1000);
+
+// EVALUATION LOGIC
+function evaluateExam() {
+    clearInterval(countdown);
+    let score = 0;
+    const allData = [...readingData, ...grammarData, ...vocabData];
+    
+    allData.forEach(item => {
+        const selected = document.querySelector(`input[name="q${item.n}"]:checked`);
+        const box = document.getElementById(`box-${item.n}`);
+        const exp = document.getElementById(`exp-${item.n}`);
+        
+        exp.style.display = 'block';
+        if (selected && selected.value === item.a) {
+            score++;
+            box.classList.add('correct-ans');
+        } else {
+            box.classList.add('incorrect-ans');
+        }
+    });
+
+    document.getElementById('score-board').style.display = 'block';
+    document.getElementById('final-score').innerText = `Your Score: ${score} / 60`;
+    window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
